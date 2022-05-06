@@ -5,14 +5,14 @@ Config = {
 	they have that discord role.
 	]]--
 	roleList = {
-		{597446537999810573, "^2Member | "}, -- 1
-		{'Server Booster', "^6Server Booster | "}, -- 2
-		{597449475547463681, "^4Developer | "}, -- 3
-		{'Customer', "^3Customer | "}, -- 4
-		{597447226997866536, "^5Supporter | "}, -- 5
-		{'Staff', "^1Staff | "}, -- 6
-		{'Admin', "^8Admin | "}, -- 7
-		{'FounderRef', "^8Founder | "}, -- 8
+		{"0", "^4Civilian | "}, -- Default if no role (0)
+		{"1234567890123456789", "^2Member | "}, -- 1
+		{"1234567890123456789", "^4Developer | "}, -- 2
+		{"1234567890123456789", "^3Customer | "}, -- 3
+		{"1234567890123456789", "^5Supporter | "}, -- 4
+		{"1234567890123456789", "^1Staff | "}, -- 5
+		{"1234567890123456789", "^8Admin | "}, -- 6
+		{"1234567890123456789", "^8Founder | "}, -- 7
 	},
 	allowedColors = {2, 3},
 	allowedRed = {4, 5, 6, 7, 8},

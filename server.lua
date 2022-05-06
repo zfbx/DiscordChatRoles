@@ -227,14 +227,15 @@ AddEventHandler('chatMessage', function(source, name, msg)
 	local args = stringsplit(msg)
 	CancelEvent()
 	local src = source 
-	if not string.find(args[1], "/") and setContains(roleTracker, GetPlayerIdentifiers(source)[1]) and 
-		not has_value(inStaffChat, GetPlayerIdentifiers(source)[1]) and not (chatNotEnabled[src] ~= nil) then 
-		local roleStr = roleList[roleTracker[GetPlayerIdentifiers(source)[1]]][2]
+	local PlayerIdentifiers = GetPlayerIdentifiers(source)
+	if not string.find(args[1], "/") and setContains(roleTracker, PlayerIdentifiers[1]) and 
+		not has_value(inStaffChat, PlayerIdentifiers[1]) and not (chatNotEnabled[src] ~= nil) then 
+		local roleStr = roleList[roleTracker[PlayerIdentifiers[1]]][2]
 		local colors = {'^0', '^2', '^3', '^4', '^5', '^6', '^7', '^8', '^9'}
 		local staffColors = {'^1', '^8'}
 		local hasColors = false
 		local hasRed = false
-		local roleNum = roleTracker[GetPlayerIdentifiers(source)[1]]
+		local roleNum = roleTracker[PlayerIdentifiers[1]]
 		for i = 1, #colors do
 			local checkFor = "%" .. tostring(colors[i])
 			if string.match(msg, checkFor) ~= nil then
@@ -297,39 +298,36 @@ AddEventHandler('chatMessage', function(source, name, msg)
 			end 
 		end
 	end
-	if not string.find(args[1], "/") and not has_value(inStaffChat, GetPlayerIdentifiers(source)[1]) and 
-		not setContains(roleTracker, GetPlayerIdentifiers(source)[1]) and not (chatNotEnabled[src] ~= nil) then
+	if not string.find(args[1], "/") and
+		not has_value(inStaffChat, PlayerIdentifiers[1]) and 
+		not setContains(roleTracker, PlayerIdentifiers[1]) and
+		not (chatNotEnabled[src] ~= nil) then
 		CancelEvent()
-		roleTracker[GetPlayerIdentifiers(source)[1]] = 1
-		for k, v in ipairs(GetPlayerIdentifiers(src)) do
-			if string.sub(v, 1, string.len("discord:")) == "discord:" then
-				identifierDiscord = v
-			end
-		end
+		roleTracker[PlayerIdentifiers[1]] = 1
 		local roleStr = roleList[1][2]
 		local roleNum = 1
 		local hasAccess = {}
 		table.insert(hasAccess, roleNum)
-		if identifierDiscord then
-			local roleIDs = exports.Badger_Discord_API:GetDiscordRoles(src)
+		if exports.zdiscord:getDiscordId(src) then
+			local roleIDs = exports.zdiscord:getRoles(src)
 			-- Loop through roleList and set their role up:
-			if not (roleIDs == false) then
+			if roleIDs then
 				for i = 1, #roleList do
 					for j = 1, #roleIDs do
 						local roleID = roleIDs[j]
-						if exports.Badger_Discord_API:CheckEqual(roleList[i][1], roleID) and i ~= 1 then
+						if roleList[i][1] == roleID and i ~= 1 then
 							roleStr = roleList[i][2]
 							table.insert(hasAccess, i)
 							roleNum = i
 						end
 					end
 				end
-				roleAccess[GetPlayerIdentifiers(source)[1]] = hasAccess;
+				roleAccess[PlayerIdentifiers[1]] = hasAccess;
 			else
 				print(GetPlayerName(src) .. " has not gotten their permissions cause roleIDs == false")
 			end
 		end
-		roleTracker[GetPlayerIdentifiers(source)[1]] = roleNum
+		roleTracker[PlayerIdentifiers[1]] = roleNum
 		local colors = {'^0', '^2', '^3', '^4', '^5', '^6', '^7', '^8', '^9'}
 		local staffColors = {'^1', '^8'}
 		local hasColors = false
@@ -395,7 +393,7 @@ AddEventHandler('chatMessage', function(source, name, msg)
 				TriggerClientEvent('chatMessage', -1, roleStr .. name .. "^7: " .. finalMessage);
 			end 
 		end
-	elseif has_value(inStaffChat, GetPlayerIdentifiers(source)[1]) and not string.find(args[1], "/") and not (chatNotEnabled[src] ~= nil) then
+	elseif has_value(inStaffChat, PlayerIdentifiers[1]) and not string.find(args[1], "/") and not (chatNotEnabled[src] ~= nil) then
 		-- Run client event for all and check perms
 		CancelEvent()
 		msg = "^7[^1StaffChat^7] ^5(^1" .. name .. "^5) ^9" .. msg
